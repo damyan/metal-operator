@@ -8,7 +8,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
 	github.com/spf13/cobra v1.9.1
-	github.com/stmcginnis/gofish v0.20.0
+	github.com/stmcginnis/gofish v0.20.1-0.20241205175338-cca588ba992f
 	golang.org/x/crypto v0.33.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.31.4
