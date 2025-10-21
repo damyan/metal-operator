@@ -795,9 +795,21 @@ func (r *ServerReconciler) pxeBootServer(ctx context.Context, log logr.Logger, b
 		return fmt.Errorf("can only PXE boot server with valid BMC ref or inline BMC configuration")
 	}
 
-	if err := bmcClient.SetPXEBootOnce(ctx, server.Spec.SystemURI); err != nil {
-		return fmt.Errorf("failed to set PXE boot one for server: %w", err)
+	// Only set PXE boot if it's not already configured
+	bootSourceOverrideTarget, err := bmcClient.GetBootSourceOverrideTarget(ctx, server.Spec.SystemURI)
+	if err != nil {
+		return fmt.Errorf("failed to get boot source override target: %w", err)
 	}
+
+	if bootSourceOverrideTarget != redfish.PxeBootSourceOverrideTarget {
+		log.V(1).Info("Setting PXE boot once")
+		if err := bmcClient.SetPXEBootOnce(ctx, server.Spec.SystemURI); err != nil {
+			return fmt.Errorf("failed to set PXE boot once for server: %w", err)
+		}
+	} else {
+		log.V(1).Info("PXE boot already configured, skipping")
+	}
+
 	return nil
 }
 
