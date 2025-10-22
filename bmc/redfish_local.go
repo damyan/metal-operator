@@ -45,7 +45,7 @@ func (r *RedfishLocalBMC) setSystemPowerState(ctx context.Context, systemURI str
 	// Apply a 150ms delay before performing the power state change.
 	time.Sleep(150 * time.Millisecond)
 
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, r.options.URISuffix)
 	if err != nil {
 		return fmt.Errorf("failed to get system: %w", err)
 	}

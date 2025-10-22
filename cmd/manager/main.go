@@ -84,6 +84,7 @@ func main() { // nolint: gocyclo
 		bmcFailureResetDelay               time.Duration
 		serverMaxConcurrentReconciles      int
 		serverClaimMaxConcurrentReconciles int
+		bmcURISuffix                       string
 	)
 
 	flag.IntVar(&serverMaxConcurrentReconciles, "server-max-concurrent-reconciles", 5,
@@ -134,6 +135,7 @@ func main() { // nolint: gocyclo
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
 	flag.DurationVar(&biosSettingsApplyTimeout, "bios-setting-timeout", 2*time.Hour,
 		"Timeout for BIOS Settings Controller")
+	flag.StringVar(&bmcURISuffix, "bmc-uri-suffix", "", "The suffix for BMC URI")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -317,6 +319,7 @@ func main() { // nolint: gocyclo
 		ManagerNamespace:     managerNamespace,
 		BMCOptions: bmc.Options{
 			BasicAuth: true,
+			URISuffix: bmcURISuffix,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "BMC")
@@ -341,6 +344,7 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			URISuffix:               bmcURISuffix,
 		},
 		DiscoveryTimeout: discoveryTimeout,
 	}).SetupWithManager(mgr); err != nil {
@@ -390,6 +394,7 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			URISuffix:               bmcURISuffix,
 		},
 		TimeoutExpiry: biosSettingsApplyTimeout,
 	}).SetupWithManager(mgr); err != nil {
@@ -415,6 +420,7 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			URISuffix:               bmcURISuffix,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "BIOSVersion")
@@ -439,6 +445,7 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			URISuffix:               bmcURISuffix,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "BMCSettings")
@@ -463,6 +470,7 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			URISuffix:               bmcURISuffix,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "BMCVersion")
