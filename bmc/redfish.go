@@ -17,6 +17,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/damyan/gofish/redfish"
 	"github.com/ironcore-dev/metal-operator/bmc/oem"
 	"github.com/stmcginnis/gofish"
 	"github.com/stmcginnis/gofish/schemas"
@@ -41,10 +42,11 @@ const (
 
 // Options contain the options for the BMC redfish client.
 type Options struct {
-	Endpoint  string
-	Username  string
-	Password  string
-	BasicAuth bool
+	Endpoint         string
+	Username         string
+	Password         string
+	BasicAuth        bool
+	RedfishURISuffix string
 
 	ResourcePollingInterval time.Duration
 	ResourcePollingTimeout  time.Duration
@@ -212,7 +214,12 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	// TODO: pass logging context from caller
 	log := ctrl.LoggerFrom(ctx)
 	log.V(2).Info("Setting PXE boot once", "SystemURI", systemURI, "Boot settings", setBoot)
-	if err := system.SetBoot(&setBoot); err != nil {
+	if r.options.RedfishURISuffix != "" {
+		defer restoreSystemURI(ctx, system, system.ODataID)
+		applySystemURISuffix(ctx, system, r.options.RedfishURISuffix)
+	}
+
+	if err := system.SetBoot(setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}
 	return nil
@@ -221,6 +228,20 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 func isSuperMicroSystem(system *schemas.ComputerSystem) bool {
 	m := strings.TrimSpace(system.Manufacturer)
 	return strings.EqualFold(m, string(ManufacturerSupermicro))
+}
+
+func restoreSystemURI(ctx context.Context, system *redfish.ComputerSystem, oldURI string) {
+	log := ctrl.LoggerFrom(ctx)
+	log.V(1).Info("Restoring system URI", "oldURI", system.ODataID, "newORIGIN", oldURI)
+
+	system.ODataID = oldURI
+}
+
+func applySystemURISuffix(ctx context.Context, system *redfish.ComputerSystem, suffix string) {
+	log := ctrl.LoggerFrom(ctx)
+	log.V(1).Info("Applying system URI suffix", "system URI", system.ODataID, "suffix", suffix)
+
+	system.ODataID = system.ODataID + suffix
 }
 
 func (r *RedfishBMC) GetManager(bmcUUID string) (*schemas.Manager, error) {
@@ -507,6 +528,12 @@ func (r *RedfishBMC) SetBootOrder(ctx context.Context, systemURI string, bootOrd
 	if err != nil {
 		return err
 	}
+
+	if r.options.RedfishURISuffix != "" {
+		defer restoreSystemURI(ctx, system, system.ODataID)
+		applySystemURISuffix(ctx, system, r.options.RedfishURISuffix)
+	}
+
 	return system.SetBoot(&schemas.Boot{
 		BootSourceOverrideEnabled: schemas.ContinuousBootSourceOverrideEnabled,
 		BootSourceOverrideTarget:  schemas.NoneBootSource,
@@ -835,6 +862,7 @@ func (r *RedfishBMC) getSystemFromUri(ctx context.Context, systemURI string) (*s
 	if len(systemURI) == 0 {
 		return nil, fmt.Errorf("can not process empty URI")
 	}
+
 	var system *schemas.ComputerSystem
 	if err := wait.PollUntilContextTimeout(
 		ctx,
