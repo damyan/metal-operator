@@ -42,11 +42,12 @@ const (
 
 // Options contain the options for the BMC redfish client.
 type Options struct {
-	Endpoint         string
-	Username         string
-	Password         string
-	BasicAuth        bool
-	RedfishURISuffix string
+	Endpoint               string
+	Username               string
+	Password               string
+	BasicAuth              bool
+	RedfishURISuffix       string
+	RedfishIgnoreEntityTag bool
 
 	ResourcePollingInterval time.Duration
 	ResourcePollingTimeout  time.Duration
@@ -214,6 +215,11 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	// TODO: pass logging context from caller
 	log := ctrl.LoggerFrom(ctx)
 	log.V(2).Info("Setting PXE boot once", "SystemURI", systemURI, "Boot settings", setBoot)
+	if r.options.RedfishIgnoreEntityTag {
+		system.SetETag("*")
+		system.StripEtagQuotes(true)
+	}
+
 	if r.options.RedfishURISuffix != "" {
 		defer restoreSystemURI(ctx, system, system.ODataID)
 		applySystemURISuffix(ctx, system, r.options.RedfishURISuffix)
@@ -527,6 +533,11 @@ func (r *RedfishBMC) SetBootOrder(ctx context.Context, systemURI string, bootOrd
 	system, err := r.getSystemFromUri(ctx, systemURI)
 	if err != nil {
 		return err
+	}
+
+	if r.options.RedfishIgnoreEntityTag {
+		system.SetETag("*")
+		system.StripEtagQuotes(true)
 	}
 
 	if r.options.RedfishURISuffix != "" {
