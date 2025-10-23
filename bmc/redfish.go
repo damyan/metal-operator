@@ -190,6 +190,7 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	} else {
 		setBoot = pxeBootWithoutSettingUEFIBootMode
 	}
+	system.SetETag("*")
 	if err := system.SetBoot(setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}
