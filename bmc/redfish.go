@@ -190,6 +190,8 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	} else {
 		setBoot = pxeBootWithoutSettingUEFIBootMode
 	}
+	system.SetETag("*")
+	system.StripEtagQuotes(true)
 	if err := system.SetBoot(setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}
@@ -447,7 +449,7 @@ func (r *RedfishBMC) GetBMCPendingAttributeValues(ctx context.Context, bmcUUID s
 
 // SetBiosAttributesOnReset sets given bios attributes.
 func (r *RedfishBMC) SetBiosAttributesOnReset(ctx context.Context, systemURI string, attributes redfish.SettingsAttributes) error {
-	system, err := r.getSystemFromUri(ctx, systemURI, r.options.URISuffix)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return err
 	}
@@ -478,6 +480,8 @@ func (r *RedfishBMC) SetBMCAttributesImmediately(ctx context.Context, bmcUUID st
 func (r *RedfishBMC) SetBootOrder(ctx context.Context, systemURI string, bootOrder []string) error {
 	system, err := r.getSystemFromUri(ctx, systemURI, r.options.URISuffix)
 	if err != nil {
+		system.SetETag("*")
+		system.StripEtagQuotes(true)
 		return err
 	}
 	return system.SetBoot(
