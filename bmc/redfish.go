@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stmcginnis/gofish"
-	"github.com/stmcginnis/gofish/common"
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish"
+	"github.com/damyan/gofish/common"
+	"github.com/damyan/gofish/redfish"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/wait"
 
@@ -179,7 +179,7 @@ func (r *RedfishBMC) GetSystems(ctx context.Context) ([]Server, error) {
 
 // SetPXEBootOnce sets the boot device for the next system boot using Redfish.
 func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI, r.options.URISuffix)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -190,11 +190,17 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	} else {
 		setBoot = pxeBootWithoutSettingUEFIBootMode
 	}
+
+	log := ctrl.LoggerFrom(ctx)
 	system.SetETag("*")
 	system.StripEtagQuotes(true)
+	oldURI := system.ODataID
+	system.ODataID = system.ODataID + r.options.URISuffix
+	log.V(1).Info("Entering SetBootPXE", "boot", setBoot, "systemURI", system.ODataID)
 	if err := system.SetBoot(setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}
+	system.ODataID = oldURI
 	return nil
 }
 

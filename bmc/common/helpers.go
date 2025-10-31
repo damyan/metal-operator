@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish/redfish"
 )
 
 // todo: merge with checkBiosAttribues after #298

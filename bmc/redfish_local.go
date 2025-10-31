@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"time"
 
+	gofishCommon "github.com/damyan/gofish/common"
 	"github.com/ironcore-dev/metal-operator/bmc/common"
-	gofishCommon "github.com/stmcginnis/gofish/common"
 
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish/redfish"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 

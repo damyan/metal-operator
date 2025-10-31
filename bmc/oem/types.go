@@ -3,7 +3,7 @@
 
 package oem
 
-import "github.com/stmcginnis/gofish/redfish"
+import "github.com/damyan/gofish/redfish"
 
 type SimpleUpdateRequestBody struct {
 	redfish.SimpleUpdateParameters
