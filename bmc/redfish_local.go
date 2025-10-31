@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"time"
 
+	gofishCommon "github.com/damyan/gofish/common"
 	"github.com/ironcore-dev/metal-operator/bmc/common"
-	gofishCommon "github.com/stmcginnis/gofish/common"
 
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish/redfish"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
@@ -45,7 +45,7 @@ func (r *RedfishLocalBMC) setSystemPowerState(ctx context.Context, systemURI str
 	// Apply a 150ms delay before performing the power state change.
 	time.Sleep(150 * time.Millisecond)
 
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get system: %w", err)
 	}

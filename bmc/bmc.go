@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stmcginnis/gofish"
-	"github.com/stmcginnis/gofish/common"
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish"
+	"github.com/damyan/gofish/common"
+	"github.com/damyan/gofish/redfish"
 	"k8s.io/apimachinery/pkg/api/resource"
 
 	"github.com/ironcore-dev/metal-operator/bmc/oem"

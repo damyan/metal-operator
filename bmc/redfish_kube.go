@@ -9,7 +9,7 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish/redfish"
 	v1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -61,7 +61,7 @@ func NewRedfishKubeBMCClient(
 
 // SetPXEBootOnce sets the boot device for the next system boot using Redfish.
 func (r *RedfishKubeBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, r.options.URISuffix)
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -72,6 +72,8 @@ func (r *RedfishKubeBMC) SetPXEBootOnce(ctx context.Context, systemURI string) e
 	} else {
 		setBoot = pxeBootWithoutSettingUEFIBootMode
 	}
+	system.SetETag("*")
+	system.StripEtagQuotes(true)
 	if err := system.SetBoot(setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}

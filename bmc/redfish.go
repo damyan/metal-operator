@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stmcginnis/gofish"
-	"github.com/stmcginnis/gofish/common"
-	"github.com/stmcginnis/gofish/redfish"
+	"github.com/damyan/gofish"
+	"github.com/damyan/gofish/common"
+	"github.com/damyan/gofish/redfish"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/wait"
 
@@ -42,6 +42,7 @@ type Options struct {
 	Username  string
 	Password  string
 	BasicAuth bool
+	URISuffix string
 
 	ResourcePollingInterval time.Duration
 	ResourcePollingTimeout  time.Duration
@@ -105,7 +106,7 @@ func (r *RedfishBMC) Logout() {
 
 // PowerOn powers on the system using Redfish.
 func (r *RedfishBMC) PowerOn(ctx context.Context, systemURI string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -121,7 +122,7 @@ func (r *RedfishBMC) PowerOn(ctx context.Context, systemURI string) error {
 
 // PowerOff gracefully shuts down the system using Redfish.
 func (r *RedfishBMC) PowerOff(ctx context.Context, systemURI string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -133,7 +134,7 @@ func (r *RedfishBMC) PowerOff(ctx context.Context, systemURI string) error {
 
 // ForcePowerOff powers off the system using Redfish.
 func (r *RedfishBMC) ForcePowerOff(ctx context.Context, systemURI string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -145,7 +146,7 @@ func (r *RedfishBMC) ForcePowerOff(ctx context.Context, systemURI string) error 
 
 // Reset performs a reset on the system using Redfish.
 func (r *RedfishBMC) Reset(ctx context.Context, systemURI string, resetType redfish.ResetType) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -178,7 +179,7 @@ func (r *RedfishBMC) GetSystems(ctx context.Context) ([]Server, error) {
 
 // SetPXEBootOnce sets the boot device for the next system boot using Redfish.
 func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -189,9 +190,17 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	} else {
 		setBoot = pxeBootWithoutSettingUEFIBootMode
 	}
+
+	log := ctrl.LoggerFrom(ctx)
+	system.SetETag("*")
+	system.StripEtagQuotes(true)
+	oldURI := system.ODataID
+	system.ODataID = system.ODataID + r.options.URISuffix
+	log.V(1).Info("Entering SetBootPXE", "boot", setBoot, "systemURI", system.ODataID)
 	if err := system.SetBoot(setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}
+	system.ODataID = oldURI
 	return nil
 }
 
@@ -261,7 +270,7 @@ func (r *RedfishBMC) ResetManager(ctx context.Context, bmcUUID string, resetType
 
 // GetSystemInfo retrieves information about the system using Redfish.
 func (r *RedfishBMC) GetSystemInfo(ctx context.Context, systemURI string) (SystemInfo, error) {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return SystemInfo{}, fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -287,7 +296,7 @@ func (r *RedfishBMC) GetSystemInfo(ctx context.Context, systemURI string) (Syste
 }
 
 func (r *RedfishBMC) GetProcessors(ctx context.Context, systemURI string) ([]Processor, error) {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get systems: %w", err)
 	}
@@ -313,7 +322,7 @@ func (r *RedfishBMC) GetProcessors(ctx context.Context, systemURI string) ([]Pro
 }
 
 func (r *RedfishBMC) GetBootOrder(ctx context.Context, systemURI string) ([]string, error) {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return []string{}, err
 	}
@@ -321,7 +330,7 @@ func (r *RedfishBMC) GetBootOrder(ctx context.Context, systemURI string) ([]stri
 }
 
 func (r *RedfishBMC) GetBiosVersion(ctx context.Context, systemURI string) (string, error) {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return "", err
 	}
@@ -340,7 +349,7 @@ func (r *RedfishBMC) GetBiosAttributeValues(ctx context.Context, systemURI strin
 	if len(attributes) == 0 {
 		return nil, nil
 	}
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return nil, err
 	}
@@ -374,7 +383,7 @@ func (r *RedfishBMC) GetBMCAttributeValues(ctx context.Context, bmcUUID string, 
 }
 
 func (r *RedfishBMC) GetBiosPendingAttributeValues(ctx context.Context, systemURI string) (redfish.SettingsAttributes, error) {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return nil, err
 	}
@@ -446,7 +455,7 @@ func (r *RedfishBMC) GetBMCPendingAttributeValues(ctx context.Context, bmcUUID s
 
 // SetBiosAttributesOnReset sets given bios attributes.
 func (r *RedfishBMC) SetBiosAttributesOnReset(ctx context.Context, systemURI string, attributes redfish.SettingsAttributes) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return err
 	}
@@ -475,8 +484,10 @@ func (r *RedfishBMC) SetBMCAttributesImmediately(ctx context.Context, bmcUUID st
 
 // SetBootOrder sets bios boot order
 func (r *RedfishBMC) SetBootOrder(ctx context.Context, systemURI string, bootOrder []string) error {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, r.options.URISuffix)
 	if err != nil {
+		system.SetETag("*")
+		system.StripEtagQuotes(true)
 		return err
 	}
 	return system.SetBoot(
@@ -618,7 +629,7 @@ func (r *RedfishBMC) getSystemManufacturer() (string, error) {
 }
 
 func (r *RedfishBMC) GetStorages(ctx context.Context, systemURI string) ([]Storage, error) {
-	system, err := r.getSystemFromUri(ctx, systemURI)
+	system, err := r.getSystemFromUri(ctx, systemURI, "")
 	if err != nil {
 		return nil, err
 	}
@@ -703,10 +714,15 @@ func (r *RedfishBMC) GetStorages(ctx context.Context, systemURI string) ([]Stora
 	return result, nil
 }
 
-func (r *RedfishBMC) getSystemFromUri(ctx context.Context, systemURI string) (*redfish.ComputerSystem, error) {
+func (r *RedfishBMC) getSystemFromUri(ctx context.Context, systemURI, suffix string) (*redfish.ComputerSystem, error) {
 	if len(systemURI) == 0 {
 		return nil, fmt.Errorf("can not process empty URI")
 	}
+
+	if suffix != "" {
+		systemURI = systemURI + suffix
+	}
+
 	var system *redfish.ComputerSystem
 	if err := wait.PollUntilContextTimeout(
 		ctx,
@@ -733,7 +749,7 @@ func (r *RedfishBMC) WaitForServerPowerState(ctx context.Context, systemURI stri
 		r.options.PowerPollingTimeout,
 		true,
 		func(ctx context.Context) (done bool, err error) {
-			sysInfo, err := r.getSystemFromUri(ctx, systemURI)
+			sysInfo, err := r.getSystemFromUri(ctx, systemURI, "")
 			if err != nil {
 				return false, fmt.Errorf("failed to get system info: %w", err)
 			}

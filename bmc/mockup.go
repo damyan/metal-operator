@@ -3,7 +3,7 @@
 
 package bmc
 
-import "github.com/stmcginnis/gofish/redfish"
+import "github.com/damyan/gofish/redfish"
 
 // RedfishMockUps is an implementation of the BMC interface for Redfish.
 type RedfishMockUps struct {

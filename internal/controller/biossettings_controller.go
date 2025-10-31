@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/damyan/gofish/redfish"
 	"github.com/ironcore-dev/metal-operator/bmc"
-	"github.com/stmcginnis/gofish/redfish"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

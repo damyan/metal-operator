@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/damyan/gofish/redfish"
 	"github.com/go-logr/logr"
 	"github.com/ironcore-dev/controller-utils/clientutils"
 	"github.com/ironcore-dev/controller-utils/conditionutils"
@@ -24,7 +25,6 @@ import (
 	"github.com/ironcore-dev/metal-operator/internal/api/registry"
 	"github.com/ironcore-dev/metal-operator/internal/bmcutils"
 	"github.com/ironcore-dev/metal-operator/internal/ignition"
-	"github.com/stmcginnis/gofish/redfish"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/ssh"
 	v1 "k8s.io/api/core/v1"

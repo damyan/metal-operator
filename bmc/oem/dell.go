@@ -13,10 +13,10 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/damyan/gofish"
+	"github.com/damyan/gofish/common"
+	"github.com/damyan/gofish/redfish"
 	helpers "github.com/ironcore-dev/metal-operator/bmc/common"
-	"github.com/stmcginnis/gofish"
-	"github.com/stmcginnis/gofish/common"
-	"github.com/stmcginnis/gofish/redfish"
 )
 
 type Dell struct {

@@ -5262,7 +5262,7 @@ string
 <td>
 <code>state</code><br/>
 <em>
-github.com/stmcginnis/gofish/redfish.TaskState
+github.com/damyan/gofish/redfish.TaskState
 </em>
 </td>
 <td>
@@ -5274,7 +5274,7 @@ github.com/stmcginnis/gofish/redfish.TaskState
 <td>
 <code>status</code><br/>
 <em>
-github.com/stmcginnis/gofish/common.Health
+github.com/damyan/gofish/common.Health
 </em>
 </td>
 <td>
