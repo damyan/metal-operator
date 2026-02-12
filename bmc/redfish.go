@@ -195,6 +195,16 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 	return nil
 }
 
+// GetBootSourceOverrideTarget retrieves the current boot source override target
+func (r *RedfishBMC) GetBootSourceOverrideTarget(ctx context.Context, systemURI string) (redfish.BootSourceOverrideTarget, error) {
+	system, err := r.getSystemFromUri(ctx, systemURI)
+	if err != nil {
+		return "", fmt.Errorf("failed to get computer system: %w", err)
+	}
+
+	return system.Boot.BootSourceOverrideTarget, nil
+}
+
 func (r *RedfishBMC) GetManager(bmcUUID string) (*redfish.Manager, error) {
 	if r.client == nil {
 		return nil, fmt.Errorf("no client found")

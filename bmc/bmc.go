@@ -50,6 +50,9 @@ type BMC interface {
 	// SetPXEBootOnce sets the boot device for the next system boot.
 	SetPXEBootOnce(ctx context.Context, systemURI string) error
 
+	// GetBootSourceOverrideTarget retrieves the current boot source override target
+	GetBootSourceOverrideTarget(ctx context.Context, systemURI string) (redfish.BootSourceOverrideTarget, error)
+
 	// GetSystemInfo retrieves information about the system.
 	GetSystemInfo(ctx context.Context, systemURI string) (SystemInfo, error)
 
