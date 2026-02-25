@@ -92,6 +92,8 @@ func main() { // nolint: gocyclo
 		serverMaxConcurrentReconciles      int
 		serverClaimMaxConcurrentReconciles int
 		dnsRecordTemplatePath              string
+		redfishURISuffix                   string
+		redfishIgnoreEntityTag             bool
 	)
 
 	flag.IntVar(&serverMaxConcurrentReconciles, "server-max-concurrent-reconciles", 5,
@@ -150,7 +152,8 @@ func main() { // nolint: gocyclo
 		"Timeout for BIOS Settings Controller")
 	flag.StringVar(&dnsRecordTemplatePath, "dns-record-template-path", "",
 		"Path to the DNS record template file used for creating DNS records for Servers.")
-
+	flag.StringVar(&redfishURISuffix, "redfish-uri-suffix", "", "Suffix for the redfish URI")
+	flag.BoolVar(&redfishIgnoreEntityTag, "redfish-ignore-entity-tag", false, "Ignore (set *) entity tag for redfish")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -348,7 +351,9 @@ func main() { // nolint: gocyclo
 		DNSRecordTemplate:      dnsRecordTemplate,
 		Conditions:             conditionutils.NewAccessor(conditionutils.AccessorOptions{}),
 		BMCOptions: bmc.Options{
-			BasicAuth: true,
+			BasicAuth:              true,
+			RedfishURISuffix:       redfishURISuffix,
+			RedfishIgnoreEntityTag: redfishIgnoreEntityTag,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "BMC")
@@ -374,6 +379,8 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			RedfishURISuffix:        redfishURISuffix,
+			RedfishIgnoreEntityTag:  redfishIgnoreEntityTag,
 		},
 		DiscoveryTimeout: discoveryTimeout,
 	}).SetupWithManager(mgr); err != nil {
@@ -416,6 +423,8 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			RedfishURISuffix:        redfishURISuffix,
+			RedfishIgnoreEntityTag:  redfishIgnoreEntityTag,
 		},
 		TimeoutExpiry: biosSettingsApplyTimeout,
 	}).SetupWithManager(mgr); err != nil {
@@ -435,6 +444,8 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			RedfishURISuffix:        redfishURISuffix,
+			RedfishIgnoreEntityTag:  redfishIgnoreEntityTag,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "BIOSVersion")
@@ -453,6 +464,8 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			RedfishURISuffix:        redfishURISuffix,
+			RedfishIgnoreEntityTag:  redfishIgnoreEntityTag,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "BMCSettings")
@@ -471,6 +484,8 @@ func main() { // nolint: gocyclo
 			PowerPollingTimeout:     powerPollingTimeout,
 			ResourcePollingInterval: resourcePollingInterval,
 			ResourcePollingTimeout:  resourcePollingTimeout,
+			RedfishURISuffix:        redfishURISuffix,
+			RedfishIgnoreEntityTag:  redfishIgnoreEntityTag,
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "BMCVersion")
