@@ -17,7 +17,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/damyan/gofish/redfish"
 	"github.com/ironcore-dev/metal-operator/bmc/oem"
 	"github.com/stmcginnis/gofish"
 	"github.com/stmcginnis/gofish/schemas"
@@ -225,7 +224,7 @@ func (r *RedfishBMC) SetPXEBootOnce(ctx context.Context, systemURI string) error
 		applySystemURISuffix(ctx, system, r.options.RedfishURISuffix)
 	}
 
-	if err := system.SetBoot(setBoot); err != nil {
+	if err := system.SetBoot(&setBoot); err != nil {
 		return fmt.Errorf("failed to set the boot order: %w", err)
 	}
 	return nil
@@ -236,14 +235,14 @@ func isSuperMicroSystem(system *schemas.ComputerSystem) bool {
 	return strings.EqualFold(m, string(ManufacturerSupermicro))
 }
 
-func restoreSystemURI(ctx context.Context, system *redfish.ComputerSystem, oldURI string) {
+func restoreSystemURI(ctx context.Context, system *schemas.ComputerSystem, oldURI string) {
 	log := ctrl.LoggerFrom(ctx)
 	log.V(1).Info("Restoring system URI", "oldURI", system.ODataID, "newORIGIN", oldURI)
 
 	system.ODataID = oldURI
 }
 
-func applySystemURISuffix(ctx context.Context, system *redfish.ComputerSystem, suffix string) {
+func applySystemURISuffix(ctx context.Context, system *schemas.ComputerSystem, suffix string) {
 	log := ctrl.LoggerFrom(ctx)
 	log.V(1).Info("Applying system URI suffix", "system URI", system.ODataID, "suffix", suffix)
 
