@@ -15,11 +15,19 @@ import (
 )
 
 const (
+<<<<<<< HEAD
+	certmanagerVersion = "v1.19.4"
+	certmanagerURLTmpl = "https://github.com/cert-manager/cert-manager/releases/download/%s/cert-manager.yaml"
+
+	defaultKindBinary  = "kind"
+	defaultKindCluster = "kind"
+=======
 	certmanagerVersion        = "v1.19.3"
 	certmanagerURLTmpl        = "https://github.com/cert-manager/cert-manager/releases/download/%s/cert-manager.yaml"
 	prometheusOperatorVersion = "v0.77.1"
 	prometheusOperatorURL     = "https://github.com/prometheus-operator/prometheus-operator/" +
 		"releases/download/%s/bundle.yaml"
+>>>>>>> tmp-original-03-03-26-00-19
 )
 
 func warnError(err error) {
