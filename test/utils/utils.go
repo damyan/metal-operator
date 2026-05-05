@@ -1,6 +1,9 @@
+<<<<<<< HEAD
+=======
 // SPDX-FileCopyrightText: 2024 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
+>>>>>>> tmp-original-05-05-26-00-31
 package utils
 
 import (
@@ -15,11 +18,19 @@ import (
 )
 
 const (
+<<<<<<< HEAD
+	certmanagerVersion = "v1.20.2"
+	certmanagerURLTmpl = "https://github.com/cert-manager/cert-manager/releases/download/%s/cert-manager.yaml"
+
+	defaultKindBinary  = "kind"
+	defaultKindCluster = "kind"
+=======
 	certmanagerVersion        = "v1.19.3"
 	certmanagerURLTmpl        = "https://github.com/cert-manager/cert-manager/releases/download/%s/cert-manager.yaml"
 	prometheusOperatorVersion = "v0.77.1"
 	prometheusOperatorURL     = "https://github.com/prometheus-operator/prometheus-operator/" +
 		"releases/download/%s/bundle.yaml"
+>>>>>>> tmp-original-05-05-26-00-31
 )
 
 func warnError(err error) {

@@ -1,6 +1,9 @@
+<<<<<<< HEAD
+=======
 // SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
+>>>>>>> tmp-original-05-05-26-00-31
 package controller
 
 import (
@@ -63,6 +66,19 @@ const (
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups="batch",resources=jobs,verbs=get;list;watch;create;update;patch;delete
 
+<<<<<<< HEAD
+// Reconcile is part of the main kubernetes reconciliation loop which aims to
+// move the current state of the cluster closer to the desired state.
+// TODO(user): Modify the Reconcile function to compare the state specified by
+// the BMCSettings object against the actual cluster state, and then
+// perform operations to make the cluster state reflect the state specified by
+// the user.
+//
+// For more details, check Reconcile and its Result here:
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.3/pkg/reconcile
+func (r *BMCSettingsReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	_ = logf.FromContext(ctx)
+=======
 func (r *BMCSettingsReconciler) Reconcile(
 	ctx context.Context,
 	req ctrl.Request,
@@ -73,6 +89,7 @@ func (r *BMCSettingsReconciler) Reconcile(
 	}
 	log := ctrl.LoggerFrom(ctx)
 	log.V(1).Info("Reconciling BMCSettings")
+>>>>>>> tmp-original-05-05-26-00-31
 
 	return r.reconcileExists(ctx, bmcSetting)
 }

@@ -1,10 +1,15 @@
+<<<<<<< HEAD
+=======
 // SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
+>>>>>>> tmp-original-05-05-26-00-31
 package controller
 
 import (
 	. "github.com/onsi/ginkgo/v2"
+<<<<<<< HEAD
+=======
 	. "github.com/onsi/gomega"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -17,11 +22,18 @@ import (
 
 	metalv1alpha1 "github.com/ironcore-dev/metal-operator/api/v1alpha1"
 	"github.com/ironcore-dev/metal-operator/internal/bmcutils"
+>>>>>>> tmp-original-05-05-26-00-31
 )
 
 var _ = Describe("BMCSettingsSet Controller", func() {
 	Context("When reconciling a resource", func() {
 
+<<<<<<< HEAD
+		It("should successfully reconcile the resource", func() {
+
+			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
+			// Example: If you expect a certain status condition after reconciliation, verify it here.
+=======
 		ns := SetupTest(nil)
 		var server01 *metalv1alpha1.Server
 		var server02 *metalv1alpha1.Server
@@ -138,6 +150,7 @@ var _ = Describe("BMCSettingsSet Controller", func() {
 			Expect(client.IgnoreNotFound(k8sClient.Delete(ctx, bmcSecret))).To(Succeed())
 			By("Ensuring all resources are cleaned up")
 			EnsureCleanState()
+>>>>>>> tmp-original-05-05-26-00-31
 		})
 
 		It("Should successfully reconcile when BMCSettingsSet was generated, labels match and bmcsettings were generated", func(ctx SpecContext) {

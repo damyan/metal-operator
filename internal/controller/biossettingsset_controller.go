@@ -1,6 +1,9 @@
+<<<<<<< HEAD
+=======
 // SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
+>>>>>>> tmp-original-05-05-26-00-31
 package controller
 
 import (
@@ -38,6 +41,18 @@ type BIOSSettingsSetReconciler struct {
 // +kubebuilder:rbac:groups=metal.ironcore.dev,resources=biossettings,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=metal.ironcore.dev,resources=servers,verbs=get;list;watch
 
+<<<<<<< HEAD
+// Reconcile is part of the main kubernetes reconciliation loop which aims to
+// move the current state of the cluster closer to the desired state.
+// TODO(user): Modify the Reconcile function to compare the state specified by
+// the BIOSSettingsSet object against the actual cluster state, and then
+// perform operations to make the cluster state reflect the state specified by
+// the user.
+//
+// For more details, check Reconcile and its Result here:
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.3/pkg/reconcile
+=======
+>>>>>>> tmp-original-05-05-26-00-31
 func (r *BIOSSettingsSetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	biosSettingsSet := &metalv1alpha1.BIOSSettingsSet{}
 	if err := r.Get(ctx, req.NamespacedName, biosSettingsSet); err != nil {

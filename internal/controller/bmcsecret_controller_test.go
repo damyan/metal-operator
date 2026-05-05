@@ -1,24 +1,22 @@
+<<<<<<< HEAD
+=======
 // SPDX-FileCopyrightText: 2024 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
+>>>>>>> tmp-original-05-05-26-00-31
 package controller
 
 import (
 	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	metalv1alpha1 "github.com/ironcore-dev/metal-operator/api/v1alpha1"
 )
 
 var _ = Describe("BMCSecret Controller", func() {
 	Context("When reconciling a resource", func() {
-		const resourceName = "test-resource"
 
+<<<<<<< HEAD
+		It("should successfully reconcile the resource", func() {
+
+=======
 		typeNamespacedName := types.NamespacedName{
 			Name:      resourceName,
 			Namespace: "default",
@@ -60,6 +58,7 @@ var _ = Describe("BMCSecret Controller", func() {
 				NamespacedName: typeNamespacedName,
 			})
 			Expect(err).To(Succeed())
+>>>>>>> tmp-original-05-05-26-00-31
 			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
 			// Example: If you expect a certain status condition after reconciliation, verify it here.
 		})

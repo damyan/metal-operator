@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+package controller
+
+import (
+	. "github.com/onsi/ginkgo/v2"
+)
+
+var _ = Describe("Server Controller", func() {
+	Context("When reconciling a resource", func() {
+
+		It("should successfully reconcile the resource", func() {
+
+			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
+			// Example: If you expect a certain status condition after reconciliation, verify it here.
+		})
+=======
 // SPDX-FileCopyrightText: 2024 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
@@ -916,6 +932,7 @@ var _ = Describe("Server Controller", func() {
 		Expect(k8sClient.Delete(ctx, server)).Should(Succeed())
 		Expect(k8sClient.Delete(ctx, bmcSecret)).Should(Succeed())
 		Expect(k8sClient.Delete(ctx, ignitionSecret)).Should(Succeed())
+>>>>>>> tmp-original-05-05-26-00-31
 	})
 })
 

@@ -103,8 +103,13 @@ kubectl apply -f https://raw.githubusercontent.com/<org>/metal-operator/<tag or 
 
 More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
 
+<<<<<<< HEAD
+## License
+
+=======
 ## Licensing
 
 Copyright 2025 SAP SE or an SAP affiliate company and IronCore contributors. Please see our [LICENSE](LICENSE) for
 copyright and license information. Detailed information including third-party components and their licensing/copyright
 information is available [via the REUSE tool](https://api.reuse.software/info/github.com/ironcore-dev/metal-operator).
+>>>>>>> tmp-original-05-05-26-00-31

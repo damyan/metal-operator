@@ -1,6 +1,9 @@
+<<<<<<< HEAD
+=======
 // SPDX-FileCopyrightText: 2024 SAP SE or an SAP affiliate company and IronCore contributors
 // SPDX-License-Identifier: Apache-2.0
 
+>>>>>>> tmp-original-05-05-26-00-31
 package controller
 
 import (
@@ -41,6 +44,16 @@ type ServerMaintenanceReconciler struct {
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
+<<<<<<< HEAD
+// TODO(user): Modify the Reconcile function to compare the state specified by
+// the ServerMaintenance object against the actual cluster state, and then
+// perform operations to make the cluster state reflect the state specified by
+// the user.
+//
+// For more details, check Reconcile and its Result here:
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.3/pkg/reconcile
+=======
+>>>>>>> tmp-original-05-05-26-00-31
 func (r *ServerMaintenanceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	maintenance := &metalv1alpha1.ServerMaintenance{}
 	if err := r.Get(ctx, req.NamespacedName, maintenance); err != nil {
